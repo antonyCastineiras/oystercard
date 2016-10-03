@@ -1,3 +1,6 @@
+require_relative 'journey'
+require_relative 'station'
+
 class OysterCard
 
 attr_accessor :balance, :entry_station, :exit_station, :journeys
@@ -29,9 +32,9 @@ attr_accessor :balance, :entry_station, :exit_station, :journeys
 
  def touch_out(station)
   @in_journey = false
-  deduct
   @exit_station = station
-  create_journey
+  journey = create_journey
+  deduct(journey.fare)
   reset_stations
  end
 
@@ -42,7 +45,8 @@ attr_accessor :balance, :entry_station, :exit_station, :journeys
    h = {}
    h[:entry_station] = @entry_station
    h[:exit_station] = @exit_station
-   @journeys.push(h)
+   @journeys << h
+   journey = Journey.new(@entry_station,@exit_station)
  end
 
  def reset_stations

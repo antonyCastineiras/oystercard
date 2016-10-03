@@ -5,3 +5,4 @@ class Station
 		@name = name
 	end
 end
+

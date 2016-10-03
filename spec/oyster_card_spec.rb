@@ -2,8 +2,9 @@ require 'oyster_card'
 
 describe OysterCard do
 
-	 let(:station) { double(:station) }
-	 let(:exit_station) { double(:station) }
+	 let(:station) { double(:station, :name => "entry_station", :zone => 1) }
+	 let(:exit_station) { double(:station, :name => "exit_station", :zone => 2) }
+	 let(:journey) { double(:jourey, :fare => 1)}
 
    describe '#initalize' do
 		it 'creates a card with a balance of 0' do
@@ -80,8 +81,10 @@ describe OysterCard do
 
       it 'updates the balance when journy is over' do
       	subject.top_up(described_class::MAX_BALANCE)
+      	initial_balance = subject.balance
 				subject.touch_in(station)
-				expect {subject.touch_out(station)}.to change{subject.balance}.by(-described_class::MINIMUM_JOURNEY_COST)
+				subject.touch_out(exit_station)
+				expect(subject.balance).to be < initial_balance
       end
 
       it 'updates the entry_station variable to nil' do
