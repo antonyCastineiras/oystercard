@@ -3,6 +3,7 @@ require 'oyster_card'
 describe OysterCard do
 
 	 let(:station) { double(:station) }
+	 let(:exit_station) { double(:station) }
 
    describe '#initalize' do
 		it 'creates a card with a balance of 0' do
@@ -11,6 +12,10 @@ describe OysterCard do
 
 		it 'creates an entry_station variable set to nil' do
 			expect(subject.entry_station).to eq nil
+		end
+
+		it 'has an empty list of journeys' do
+			expect(subject.journeys).to eq []
 		end
 
 	 end
@@ -69,21 +74,44 @@ describe OysterCard do
 			it 'changes the in_journy to false' do
 				subject.top_up(2)
 				subject.touch_in(station)
-				subject.touch_out
+				subject.touch_out(station)
 				expect(subject.in_journey?).to be(false)
 			end
 
       it 'updates the balance when journy is over' do
       	subject.top_up(described_class::MAX_BALANCE)
 				subject.touch_in(station)
-				expect {subject.touch_out}.to change{subject.balance}.by(-described_class::MINIMUM_JOURNEY_COST)
+				expect {subject.touch_out(station)}.to change{subject.balance}.by(-described_class::MINIMUM_JOURNEY_COST)
       end
 
       it 'updates the entry_station variable to nil' do
       	subject.top_up(10)
       	subject.touch_in(station)
-      	subject.touch_out
+      	subject.touch_out(exit_station)
       	expect(subject.entry_station).to eq nil
       end
+
+			it 'stores the exit station' do
+				subject.top_up(10)
+      	subject.touch_in(station)
+      	subject.touch_out(exit_station)
+				expect(subject.journeys[0]).to include(:exit_station => exit_station)
+			end
+		end
+
+		describe '#create_journey' do
+			it 'records a journey as a hash' do
+				subject.top_up(10)
+      	subject.touch_in(station)
+      	subject.touch_out(exit_station)
+				expect(subject.journeys[0]).to include(:entry_station => station, :exit_station => exit_station)
+			end
+
+			it 'creates one journey for every touch in/out' do
+				subject.top_up(10)
+      	subject.touch_in(station)
+      	subject.touch_out(exit_station)
+				expect(subject.journeys.length).to eq 1 
+			end
 		end
 end
