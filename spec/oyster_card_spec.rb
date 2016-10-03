@@ -24,5 +24,15 @@ describe OysterCard do
 			end
 		end
 
+		describe '#deduct' do
+			it {is_expected.to respond_to(:deduct).with(1).argument}
+
+			it 'takes money of the card' do
+				subject.top_up(described_class::MAX_BALANCE)
+				subject.deduct(10)
+				expect(subject.balance).to eq described_class::MAX_BALANCE - 10
+			end
+		end
+
    end
 end
