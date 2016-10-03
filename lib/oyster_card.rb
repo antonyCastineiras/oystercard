@@ -3,6 +3,7 @@ class OysterCard
 attr_accessor :balance
 
  MAX_BALANCE = 90
+ MINIMUM_JOURNEY_COST = 1
 
  def initialize
    @balance = 0
@@ -23,6 +24,7 @@ attr_accessor :balance
  end
 
  def touch_in
+ 	 fail "Insufficient funds for journey" if @balance < MINIMUM_JOURNEY_COST
    @in_journey = true
  end
 
