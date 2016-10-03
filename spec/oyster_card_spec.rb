@@ -26,11 +26,9 @@ describe OysterCard do
 
 		describe '#deduct' do
 
-			it {is_expected.to respond_to(:deduct).with(1).argument}
-
 			it 'takes money of the card' do
 				subject.top_up(described_class::MAX_BALANCE)
-				subject.deduct(10)
+				subject.send(:deduct, 10)
 				expect(subject.balance).to eq described_class::MAX_BALANCE - 10
 			end
 		end
@@ -48,7 +46,7 @@ describe OysterCard do
 				expect(subject.in_journey?).to be(true)
 			end
 
-			it 'raises an error when balance is below £1' do
+			it 'raises an error when journy exceeds balance' do
 				subject.top_up(0.5)
 				expect{subject.touch_in}.to raise_error "Insufficient funds for journey"
 			end
@@ -61,6 +59,12 @@ describe OysterCard do
 				subject.touch_out
 				expect(subject.in_journey?).to be(false)
 			end
+
+      it 'updates the balance when journy is over' do
+      	subject.top_up(described_class::MAX_BALANCE)
+				subject.touch_in
+				expect {subject.touch_out}.to change{subject.balance}.by(-described_class::MINIMUM_JOURNEY_COST)
+      end
 		end
 
    end

@@ -15,10 +15,6 @@ attr_accessor :balance
  	@balance += amount
  end
 
- def deduct(amount)
- 	@balance -= amount
- end
-
  def in_journey?
    @in_journey
  end
@@ -30,6 +26,13 @@ attr_accessor :balance
 
  def touch_out
   @in_journey = false
+  deduct
+ end
+
+ private
+
+ def deduct(amount = MINIMUM_JOURNEY_COST )
+   @balance -= amount
  end
 
 end
