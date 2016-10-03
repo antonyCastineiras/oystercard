@@ -25,12 +25,34 @@ describe OysterCard do
 		end
 
 		describe '#deduct' do
+
 			it {is_expected.to respond_to(:deduct).with(1).argument}
 
 			it 'takes money of the card' do
 				subject.top_up(described_class::MAX_BALANCE)
 				subject.deduct(10)
 				expect(subject.balance).to eq described_class::MAX_BALANCE - 10
+			end
+		end
+
+		describe '#in_journey?' do
+			it 'checks if the card is in use' do
+       expect(subject.in_journey?).to be(true).or be(false)
+			end
+		end
+
+		describe '#touch_in' do
+			it 'changes the in_journy to true' do
+				subject.touch_in
+				expect(subject.in_journey?).to be(true)
+			end
+		end
+
+		describe '#touch_out' do
+			it 'changes the in_journy to false' do
+				subject.touch_in
+				subject.touch_out
+				expect(subject.in_journey?).to be(false)
 			end
 		end
 
