@@ -4,7 +4,7 @@ describe Oystercard do
   let(:card) { Oystercard.new }
   let(:start_station) { double :start_station}
   let(:exit_station) { double :exit_station }
-  let(:journey) { {start_station: start_station, exit_station: exit_station} }
+  let(:journey) { {beginning: start_station, end: exit_station} }
 
   describe 'initialized card' do
 
@@ -25,9 +25,7 @@ describe Oystercard do
       card.touch_out(exit_station)
       expect(card.journeys).to include journey
     end
-
   end
-
 
   describe '#in_journey'  do
     it "will know when the card is in journey" do
@@ -57,7 +55,6 @@ describe Oystercard do
 
   end
 
-
   describe '#touch_out' do
 
     it "will change the in_journey status to false" do
@@ -77,10 +74,6 @@ describe Oystercard do
     it "will deduct the correct amount for the journey" do
       expect{ card.touch_out(exit_station) }.to change { card.balance }.by(-described_class::MINIMUM_FARE)
     end
-
-
-
-
   end
 
   describe '#topup' do
