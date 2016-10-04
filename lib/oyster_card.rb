@@ -19,15 +19,16 @@ class Oystercard
     @balance = @balance + funds
   end
 
-
   def touch_in(start_station)
     @start_station = start_station
     fail "Not enough funds on card." if @balance < MINIMUM_FARE
   end
 
-  def touch_out
+  def touch_out(exit_station)
+    @exit_station = exit_station
     @start_station = nil
     deduct(MINIMUM_FARE)
+
   end
 
   def in_journey?
