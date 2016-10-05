@@ -1,8 +1,4 @@
 
-
-
-
-
 class JourneyLog
 
 	attr_reader :journey_class

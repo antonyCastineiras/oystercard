@@ -1,26 +1,45 @@
 require 'journey'
-
 describe Journey do
 
-	subject { described_class.new(:entry_station, :exit_station)}
 	let(:station) { double :station, zone: 1 }
 
-	describe '#initialize' do
-
-		it 'sets an entry_station variable' do
-			expect(subject.entry_station).to eq :entry_station
-		end
-
-		it 'sets an exit_station variable' do
-			expect(subject.exit_station).to eq :exit_station
-		end
+	it 'knows if a journey is not complete' do
+		expect(subject).not_to be_complete
 	end
 
-	describe '#fare' do
+	it 'has a penalty fare by default' do
+		expect(subject.fare).to eq described_class::PENALTY_FARE
+	end
 
-		it 'returns the minimum if stations equal nil' do
-			subject {described_class.new(nil,nil)}
-			expect(subject.fare).to eq described_class::MINIMUM_FARE
+	it "returns itself when exiting a journey" do
+		expect(subject.finish(station)).to eq(subject)
+	end
+
+	context 'given an entry station' do
+		subject {described_class.new(entry_station: station)}
+
+		it 'has an entry station' do
+			expect(subject.entry_station).to eq station
+		end
+
+		it "returns a penalty fare if no exit station given" do
+			expect(subject.fare).to eq described_class::PENALTY_FARE
+		end
+
+		context 'given an exit station' do
+			let(:other_station) { double :other_station }
+
+			before do
+				subject.finish(other_station)
+			end
+
+			it 'calculates a fare' do
+				expect(subject.fare).to eq described_class::MINIMUM_FARE
+			end
+
+			it "knows if a journey is complete" do
+				expect(subject).to be_complete
+			end
 		end
 	end
 end
