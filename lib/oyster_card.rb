@@ -1,9 +1,9 @@
+require_relative 'journey'
+
 class Oystercard
 
   DEFAULT_BALANCE = 0.0
   MAX_BALANCE = 90
-	MINIMUM_FARE = 1
-
 
   attr_reader :balance, :entry_station, :journeys
 
@@ -20,7 +20,7 @@ class Oystercard
   end
 
   def touch_in(entry_station)
-    fail "Not enough funds on card." if @balance < MINIMUM_FARE
+    fail "Not enough funds on card." if @balance < Journey::MINIMUM_FARE
     @entry_station = entry_station
   end
 
