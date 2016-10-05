@@ -1,10 +1,10 @@
 require 'oyster_card'
+require 'journey'
 
 describe Oystercard do
   let(:card) { Oystercard.new }
-  let(:start_station) { double :start_station}
+  let(:entry_station) { double :entry_station}
   let(:exit_station) { double :exit_station }
-  let(:journey) { {beginning: start_station, end: exit_station} }
 
   before do |example|
     unless example.metadata[:skip_before]
@@ -23,15 +23,16 @@ describe Oystercard do
     end
 
     it "stores journeys on the card" do
-      card.touch_in(start_station)
+      initial_count = subject.journeys.count
+      card.touch_in(entry_station)
       card.touch_out(exit_station)
-      expect(card.journeys).to include journey
+      expect(card.journeys.count).to be > initial_count
     end
   end
 
   describe '#in_journey'  do
     it "will know when the card is in journey" do
-      card.touch_in(start_station)
+      card.touch_in(entry_station)
       expect(card.in_journey?).to eq true
     end
   end
@@ -39,17 +40,17 @@ describe Oystercard do
   describe '#touch_in' do
 
     it "will change the in_journey status to true" do
-      card.touch_in(start_station)
+      card.touch_in(entry_station)
       expect(card).to be_in_journey
     end
 
     it "stores the entry station" do
-      card.touch_in(start_station)
-      expect(card.start_station).to eq start_station
+      card.touch_in(entry_station)
+      expect(card.entry_station).to eq entry_station
     end
 
     it "will only allow a card to touch_in if there are sufficient funds", skip_before: true do
-      expect{ card.touch_in(start_station) }.to raise_error "Not enough funds on card."
+      expect{ card.touch_in(entry_station) }.to raise_error "Not enough funds on card."
     end
 
   end
@@ -57,15 +58,15 @@ describe Oystercard do
   describe '#touch_out' do
 
     it "will change the in_journey status to false" do
-      card.touch_in(start_station)
+      card.touch_in(entry_station)
       card.touch_out(exit_station)
       expect(card).not_to be_in_journey
     end
 
-    it "will cause the card to forget start_station" do
-      card.touch_in(start_station)
+    it "will cause the card to forget entry_station" do
+      card.touch_in(entry_station)
       card.touch_out(exit_station)
-      expect(card.start_station).to eq nil
+      expect(card.entry_station).to eq nil
     end
 
     it "will deduct the correct amount for the journey" do
