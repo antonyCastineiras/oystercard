@@ -1,6 +1,6 @@
-class JourneyLog 
+class JourneyLog
 
-	attr_reader :journey_class, :journeys 
+	attr_reader :journey_class, :journeys
 	attr_accessor :current_journey
 
 	def initialize(journey_class)
@@ -17,8 +17,6 @@ class JourneyLog
 		@journeys << @current_journey
 		@current_journey = nil
 	end
-
-	private
 
 	def current_journey
 		@current_journey || journey_class.new

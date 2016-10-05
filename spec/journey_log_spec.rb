@@ -7,13 +7,14 @@ require 'journey_log'
 require 'journey_log'
 
 describe JourneyLog do
-	
-	let(:journey) { double(:journey, entry_station: station) }
+
+	let(:journey) { double(:journey, entry_station: station, exit_station: station) }
 	let(:station) {  double(:station) }
 	let(:journey_class) { double(:journey_class, new: journey) }
+	let(:current_journey) { double(:current_journey, exit_station: station)}
 
 	describe '#initialize' do
-		subject { described_class.new(journey) }  
+		subject { described_class.new(journey) }
 
 		it 'asigns a journey object to the journey_class varaible' do
 			expect(subject.journey_class).to eq(journey)
@@ -40,13 +41,14 @@ describe JourneyLog do
 		subject { described_class.new(journey_class) }
 
 		it 'adds an exit station to the current journey' do
+			allow(journey).to receive(:exit_station=) {station}
 			subject.start(station)
 			subject.finish(station)
 			expect(subject.current_journey.exit_station).to eq station
 		end
 
 		it 'records a journey' do
-			allow(journey_class).to receive(:new).and_return journey
+			allow(journey).to receive(:exit_station=) {station}
 			subject.start(station)
 			subject.finish(station)
 			expect(subject.journeys).to include journey
