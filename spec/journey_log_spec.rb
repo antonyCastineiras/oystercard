@@ -44,7 +44,7 @@ describe JourneyLog do
 			allow(journey).to receive(:exit_station=) {station}
 			subject.start(station)
 			subject.finish(station)
-			expect(subject.current_journey.exit_station).to eq station
+			expect(subject.send(:current_journey).exit_station).to eq station
 		end
 
 		it 'records a journey' do
