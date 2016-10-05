@@ -5,8 +5,10 @@ describe Oystercard do
   let(:card) { Oystercard.new }
   let(:entry_station) { double :entry_station}
   let(:exit_station) { double :exit_station }
+  let(:journey) {double :journey }
 
   before do |example|
+    allow(journey).to receive(:fare) {-Journey::PENALTY_FARE}
     unless example.metadata[:skip_before]
       card.topup(Oystercard::MAX_BALANCE)
     end
@@ -70,7 +72,7 @@ describe Oystercard do
     end
 
     it "will deduct the correct amount for the journey" do
-      expect{ card.touch_out(exit_station) }.to change { card.balance }.by(-described_class::MINIMUM_FARE)
+      expect{ card.touch_out(exit_station) }.to change { card.balance }.by(journey.fare)
     end
   end
 
