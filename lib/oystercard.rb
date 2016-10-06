@@ -3,8 +3,7 @@ require_relative 'station'
 require_relative 'journeylog'
 
 class Oystercard
-  attr_reader :balance, :entry_station, :exit_station
-  attr_accessor :journeys, :journey_log
+  attr_reader :balance, :entry_station, :exit_station, :journey_log 
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1

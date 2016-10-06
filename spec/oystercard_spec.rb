@@ -4,7 +4,7 @@ describe Oystercard do
   subject(:oystercard) {described_class.new}
   let(:entry_station) { double(:entry_station, :zone=>1) }
   let(:exit_station) { double(:exit_station, :zone=>2) }
-  let(:journey) { {entry_station: entry_station, exit_station: exit_station, fare: 1 } }
+
 
   MINIMUM_FARE = 1
 
