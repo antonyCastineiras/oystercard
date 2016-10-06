@@ -1,14 +1,21 @@
 require './lib/oystercard'
 require './lib/journey'
+require './lib/journeylog'
+require './lib/station'
 
-#card = Oystercard.new
-#station1 = Station.new(:bank, 1)
-#station2 = Station.new(:liverpool, 2)
-#card.top_up(10)
+@card = Oystercard.new(90)
+@station1 = Station.new(:name1,1)
+@station2 = Station.new(:name2,2)
 
-#card.touch_in(station1)
-#card.touch_out(station2)
-#card.touch_out(station1)
-#puts card.inspect
-# card.touch_in(nil)
-# card.touch_out(:water)
+def print_card_details
+	puts """
+CARD BALANCE: #{@card.balance}
+CURRENT JOURNEY: #{@card.current_journey}
+JOURNEYS: #{@card.journey_log.journeys}
+	"""
+end
+
+
+@card.touch_out(@station1)
+@card.touch_out(@station2)
+print_card_details

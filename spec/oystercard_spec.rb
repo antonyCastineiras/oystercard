@@ -40,32 +40,27 @@ describe Oystercard do
       subject.touch_in(entry_station)
     end
     describe '#touch_in' do
-      it 'will set #in_current_journey? to true' do
-        expect(subject).to be_in_current_journey
+
+      it 'will deduct a penalty if user fails to touch out' do
+        subject.top_up(50)
+        initial_balance = subject.balance
+        subject.current_journey.entry_station = entry_station
+        expect(subject.balance).to eq initial_balance - 6
       end
+
     end
+
     describe '#touch_out' do
-      it 'will set #in_current_journey? to false' do
-        subject.touch_out(exit_station)
-        expect(subject).to be_in_current_journey
-      end
+      
       it 'a single journey will reduce balance by minimum fare' do
         expect {subject.touch_out(exit_station)}.to change {subject.balance}.by(-MINIMUM_FARE)
       end
-    end
-  end
 
-  context 'incorrect card usage' do
-    before do
-      subject.top_up(described_class::MINIMUM_BALANCE)
-    end
-    it 'will deduct a penalty if user fails to touch out' do
-      subject.touch_in(entry_station)
-      expect {subject.touch_in(entry_station)}.to change {subject.balance}.by(-journey[:fare])
-    end
-    it 'will charge a penalty if user fails to touch in' do
-      subject.touch_out(exit_station)
-      expect {subject.touch_out(exit_station)}.to change {subject.balance}.by(-journey.fare)
+      it 'will charge a penalty if user fails to touch in' do
+        subject.touch_out(exit_station)
+        expect {subject.touch_out(exit_station)}.to change {subject.balance}.by(-journey.fare)
+      end
+
     end
   end
 end

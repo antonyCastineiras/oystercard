@@ -16,35 +16,39 @@ class Oystercard
   end
 
   def top_up(amount)
-    fail "Card limit of £#{MAXIMUM_BALANCE} has been reached." if (@balance + amount) > MAXIMUM_BALANCE
+    (@balance + amount) > MAXIMUM_BALANCE ? fail("Card limit of £#{MAXIMUM_BALANCE} has been reached.") :
     @balance += amount
   end
 
   def touch_in(entry_station)
-    fail "Insufficient funds" if @balance < MINIMUM_BALANCE
-    if @journey_log.active_journey != nil
-      deduct(@journey_log.active_journey.penalty_fare)
-    end
+    @balance < MINIMUM_BALANCE ? fail("Insufficient funds") :
+    failed_to_touch_out? ? deduct(current_journey.penalty_fare) :
     @journey_log.start(entry_station)
-    in_current_journey?
   end
+
 
   def touch_out(exit_station)
-    if @journey_log.active_journey == nil
-      @journey_log.start(exit_station)
-      deduct(@journey_log.active_journey.penalty_fare)
-    end
+    failed_to_touch_in? ? deduct(current_journey.penalty_fare) :   
+    current_journey.exit_station = exit_station
+    deduct(current_journey.calculate_fare)
     @journey_log.finish(exit_station)
-    deduct(@journey_log.journeys.last.fare)
-    #@journey_log.active_journey.in_journey?
   end
 
-  def in_current_journey?
-    @journey_log.active_journey.in_journey?
+
+  def current_journey
+    @journey_log.send(:current_journey)
   end
 
   private
 
+  def failed_to_touch_out?
+    current_journey.entry_station != nil
+  end
+
+  def failed_to_touch_in?
+    current_journey.entry_station == nil
+  end
+  
   def deduct(amount)
     @balance -= amount
   end
