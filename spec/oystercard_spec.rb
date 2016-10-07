@@ -35,10 +35,6 @@ describe Oystercard do
   end
 
   context 'using a card' do
-    before do
-      subject.top_up(described_class::MINIMUM_BALANCE)
-      subject.touch_in(entry_station)
-    end
     describe '#touch_in' do
 
       it 'will deduct a penalty if user fails to touch out' do
